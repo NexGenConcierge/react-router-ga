@@ -8,7 +8,8 @@ type Props = {
   debug: boolean,
   children?: React.Node,
   location: Location,
-  history: RouterHistory
+  history: RouterHistory,
+  fullPathname: boolean,
 };
 
 class ReactRouterGA extends React.Component<Props> {
@@ -49,15 +50,17 @@ class ReactRouterGA extends React.Component<Props> {
       return;
     }
 
+    const pathname = this.props.fullPathname ? window.location.pathname : location.pathname
+
     // Sets the page value on the tracker.
-    window.ga('set', 'page', location.pathname);
+    window.ga('set', 'page', pathname);
 
     // Sending the pageview no longer requires passing the page
     // value since it's now stored on the tracker object.
     window.ga('send', 'pageview');
 
     if (this.props.debug) {
-      console.info(`[react-router-ga] Page view: ${location.pathname}`);
+      console.info(`[react-router-ga] Page view: ${pathname}`);
     }
   }
 
@@ -67,7 +70,8 @@ class ReactRouterGA extends React.Component<Props> {
 }
 
 ReactRouterGA.defaultProps = {
-  debug: false
+  debug: false,
+  fullPathname: false,
 };
 
 export default withRouter(ReactRouterGA);
